@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mayron1806/go-fast/config"
+	"github.com/mayron1806/go-clover-core/config"
 	"github.com/stretchr/testify/assert"
 )
 

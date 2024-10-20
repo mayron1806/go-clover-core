@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/mayron1806/go-fast/model"
+	"github.com/mayron1806/go-clover-core/model"
 )
 
 type SQLRepository[T model.IModel] struct {

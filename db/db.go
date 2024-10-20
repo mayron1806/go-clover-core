@@ -3,7 +3,7 @@ package db
 import (
 	"database/sql"
 
-	"github.com/mayron1806/go-fast/logging"
+	"github.com/mayron1806/go-clover-core/logging"
 )
 
 type Database struct {

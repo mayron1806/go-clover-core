@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
-	"github.com/mayron1806/go-fast/logging"
+	"github.com/mayron1806/go-clover-core/logging"
 )
 
 type DefaultEnvLoader[T any] struct {

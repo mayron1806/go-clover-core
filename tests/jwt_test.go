@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mayron1806/go-fast/logging"
-	"github.com/mayron1806/go-fast/service"
+	"github.com/mayron1806/go-clover-core/logging"
+	"github.com/mayron1806/go-clover-core/service"
 	"github.com/stretchr/testify/assert"
 )
 

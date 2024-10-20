@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"github.com/mayron1806/go-fast/model"
-	"github.com/mayron1806/go-fast/repository"
+	"github.com/mayron1806/go-clover-core/model"
+	"github.com/mayron1806/go-clover-core/repository"
 )
 
 type InputUpdate[E model.IModel] struct {

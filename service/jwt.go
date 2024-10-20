@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/mayron1806/go-fast/config"
+	"github.com/mayron1806/go-clover-core/config"
 )
 
 var SigningMethod map[string]*jwt.SigningMethodHMAC = map[string]*jwt.SigningMethodHMAC{

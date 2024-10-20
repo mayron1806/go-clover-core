@@ -1,6 +1,6 @@
 package main
 
-import "github.com/mayron1806/go-fast/server"
+import "github.com/mayron1806/go-clover-core/server"
 
 func main() {
 	f := server.NewFastServer(nil)

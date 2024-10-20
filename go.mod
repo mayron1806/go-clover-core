@@ -1,4 +1,4 @@
-module github.com/mayron1806/go-fast
+module github.com/mayron1806/go-clover-core
 
 go 1.23.2
 
