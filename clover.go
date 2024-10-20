@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/mayron1806/go-clover-core/logging"
+	"github.com/mayron1806/go-clover-core/cloverlog"
 )
 
-var logger = logging.NewLogger(logging.LoggerOptions{
+var logger = cloverlog.NewLogger(cloverlog.LoggerOptions{
 	HideTime:   true,
 	HidePrefix: true,
 })

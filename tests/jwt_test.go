@@ -5,13 +5,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mayron1806/go-clover-core/service"
+	"github.com/mayron1806/go-clover-core/cloverservice"
 	"github.com/stretchr/testify/assert"
 )
 
 // Mock TokenOptions for testing
-func mockTokenOptions() service.TokenOptions {
-	return service.TokenOptions{
+func mockTokenOptions() cloverservice.TokenOptions {
+	return cloverservice.TokenOptions{
 		Duration: time.Minute * 15,
 		Issuer:   "test-issuer",
 		Secret:   "test-secret",
@@ -21,7 +21,7 @@ func mockTokenOptions() service.TokenOptions {
 
 func TestGenerateToken(t *testing.T) {
 	// Initialize the JWT service
-	jwtService := service.NewJWTService()
+	jwtService := cloverservice.NewJWTService()
 
 	// Mock options
 	opts := mockTokenOptions()
@@ -43,7 +43,7 @@ func TestGenerateToken(t *testing.T) {
 
 func TestParseToken_ValidToken(t *testing.T) {
 	// Initialize the JWT service
-	jwtService := service.NewJWTService()
+	jwtService := cloverservice.NewJWTService()
 
 	// Mock options
 	opts := mockTokenOptions()
@@ -61,7 +61,7 @@ func TestParseToken_ValidToken(t *testing.T) {
 
 func TestParseToken_InvalidToken(t *testing.T) {
 	// Initialize the JWT service
-	jwtService := service.NewJWTService()
+	jwtService := cloverservice.NewJWTService()
 
 	// Mock options
 	opts := mockTokenOptions()
@@ -77,7 +77,7 @@ func TestParseToken_InvalidToken(t *testing.T) {
 
 func TestDefaultTokenOptions(t *testing.T) {
 	// Set expected environment variables for the test
-	opts, err := service.DefaultTokenOptions()
+	opts, err := cloverservice.DefaultTokenOptions()
 
 	assert.NoError(t, err, "Error loading default token options")
 	assert.NotEmpty(t, opts.Secret, "Token secret should be set")
@@ -87,10 +87,10 @@ func TestDefaultTokenOptions(t *testing.T) {
 
 func TestGenerateToken_Expiration(t *testing.T) {
 	// Initialize the JWT service
-	jwtService := service.NewJWTService()
+	jwtService := cloverservice.NewJWTService()
 
 	// Mock options with a short expiration
-	opts := service.TokenOptions{
+	opts := cloverservice.TokenOptions{
 		Duration: time.Second * 1, // 1 second for quick expiration
 		Issuer:   "test-issuer",
 		Secret:   "test-secret",

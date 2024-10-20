@@ -1,4 +1,4 @@
-package config
+package cloverconfig
 
 import (
 	"errors"
@@ -10,17 +10,17 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
-	"github.com/mayron1806/go-clover-core/logging"
+	"github.com/mayron1806/go-clover-core/cloverlog"
 )
 
 type DefaultEnvLoader[T any] struct {
-	logger *logging.Logger
+	logger *cloverlog.Logger
 }
 
 // Função para criar um novo DefaultEnvLoader
 func NewEnvLoader[T any]() *DefaultEnvLoader[T] {
 	return &DefaultEnvLoader[T]{
-		logger: logging.NewLogger(logging.LoggerOptions{
+		logger: cloverlog.NewLogger(cloverlog.LoggerOptions{
 			Prefix: "ENV",
 		}),
 	}

@@ -1,4 +1,4 @@
-package repository
+package cloverepo
 
 import (
 	"database/sql"
@@ -6,16 +6,16 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/mayron1806/go-clover-core/model"
+	"github.com/mayron1806/go-clover-core/clovermodel"
 )
 
-type SQLRepository[T model.IModel] struct {
+type SQLRepository[T clovermodel.IModel] struct {
 	db        *sql.DB
 	tableName string
 }
 
 // NewSQLRepository creates a new instance of SQLRepository.
-func NewSQLRepository[T model.IModel](db *sql.DB, tableName string) *SQLRepository[T] {
+func NewSQLRepository[T clovermodel.IModel](db *sql.DB, tableName string) *SQLRepository[T] {
 	return &SQLRepository[T]{
 		db:        db,
 		tableName: tableName,

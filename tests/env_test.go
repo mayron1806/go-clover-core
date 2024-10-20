@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mayron1806/go-clover-core/config"
+	"github.com/mayron1806/go-clover-core/cloverconfig"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,7 +19,7 @@ type MockConfig struct {
 
 func TestLoadEnv_WithDefaults(t *testing.T) {
 	// Create a new environment loader
-	envLoader := config.NewEnvLoader[MockConfig]()
+	envLoader := cloverconfig.NewEnvLoader[MockConfig]()
 
 	// Load environment variables into the struct
 	config, err := envLoader.LoadEnv()
@@ -46,7 +46,7 @@ func TestLoadEnv_WithEnvVariables(t *testing.T) {
 	defer os.Unsetenv("DURATION_FIELD")
 
 	// Create a new environment loader
-	envLoader := config.NewEnvLoader[MockConfig]()
+	envLoader := cloverconfig.NewEnvLoader[MockConfig]()
 
 	// Load environment variables into the struct
 	config, err := envLoader.LoadEnv()
@@ -72,7 +72,7 @@ func TestLoadEnv_ValidationFailure(t *testing.T) {
 	defer os.Unsetenv("MANDATORY_FIELD")
 
 	// Create a new environment loader
-	envLoader := config.NewEnvLoader[InvalidConfig]()
+	envLoader := cloverconfig.NewEnvLoader[InvalidConfig]()
 
 	// Load environment variables into the struct
 	_, err := envLoader.LoadEnv()
@@ -94,7 +94,7 @@ func TestLoadEnv_ValidStruct(t *testing.T) {
 	defer os.Unsetenv("MANDATORY_FIELD")
 
 	// Create a new environment loader
-	envLoader := config.NewEnvLoader[ValidConfig]()
+	envLoader := cloverconfig.NewEnvLoader[ValidConfig]()
 
 	// Load environment variables into the struct
 	config, err := envLoader.LoadEnv()

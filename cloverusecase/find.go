@@ -1,9 +1,9 @@
-package usecase
+package cloverusecase
 
-import "github.com/mayron1806/go-clover-core/repository"
+import "github.com/mayron1806/go-clover-core/cloverepo"
 
 type UseCaseFind[E any] struct {
-	repository repository.Repository[E]
+	repository cloverepo.Repository[E]
 }
 
 func (u UseCaseFind[E]) Execute(id int64) (*E, error) {

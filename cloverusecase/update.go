@@ -1,16 +1,16 @@
-package usecase
+package cloverusecase
 
 import (
-	"github.com/mayron1806/go-clover-core/model"
-	"github.com/mayron1806/go-clover-core/repository"
+	"github.com/mayron1806/go-clover-core/cloverepo"
+	"github.com/mayron1806/go-clover-core/clovermodel"
 )
 
-type InputUpdate[E model.IModel] struct {
+type InputUpdate[E clovermodel.IModel] struct {
 	key    int64
 	entity E
 }
-type Update[E model.IModel] struct {
-	repository repository.Repository[E]
+type Update[E clovermodel.IModel] struct {
+	repository cloverepo.Repository[E]
 }
 
 func (u Update[E]) Execute(input InputUpdate[E]) (*E, error) {

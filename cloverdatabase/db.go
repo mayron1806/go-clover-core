@@ -1,14 +1,14 @@
-package db
+package cloverdatabase
 
 import (
 	"database/sql"
 
-	"github.com/mayron1806/go-clover-core/logging"
+	"github.com/mayron1806/go-clover-core/cloverlog"
 )
 
 type Database struct {
 	dbInstance *sql.DB
-	logger     *logging.Logger
+	logger     *cloverlog.Logger
 }
 
 func (d *Database) Connect(driver, dsn string) error {
@@ -34,7 +34,7 @@ func (d *Database) Close() error {
 }
 func NewDatabase() *Database {
 	return &Database{
-		logger: logging.NewLogger(logging.LoggerOptions{
+		logger: cloverlog.NewLogger(cloverlog.LoggerOptions{
 			Prefix: "DB",
 		}),
 	}

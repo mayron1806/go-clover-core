@@ -1,4 +1,4 @@
-package repository
+package cloverepo
 
 import (
 	"database/sql"

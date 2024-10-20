@@ -1,4 +1,4 @@
-package repository
+package cloverepo
 
 type Repository[Entity any] interface {
 	Find(key int64) (Entity, error)
