@@ -20,7 +20,9 @@ type DefaultEnvLoader[T any] struct {
 // Função para criar um novo DefaultEnvLoader
 func NewEnvLoader[T any]() *DefaultEnvLoader[T] {
 	return &DefaultEnvLoader[T]{
-		logger: logging.NewLogger("Env Loader"),
+		logger: logging.NewLogger(logging.LoggerOptions{
+			Prefix: "ENV",
+		}),
 	}
 }
 

@@ -21,16 +21,50 @@ type Logger struct {
 	err    *log.Logger
 	writer io.Writer
 }
+type LoggerOptions struct {
+	Prefix     string
+	HideTime   bool
+	HidePrefix bool
+}
 
-func NewLogger(prefix string) *Logger {
+func getLog(writer io.Writer, logType string, prefix string, hideTime bool, hidePrefix bool) *log.Logger {
+	var flag int
+	if !hideTime {
+		flag = log.Ltime | log.Ldate
+	}
+	var prefixText string
+
+	if !hidePrefix {
+		switch logType {
+		case "debug":
+			prefixText = blue + prefix + " [DEBUG] " + reset
+		case "info":
+			prefixText = green + prefix + " [INFO] " + reset
+		case "warn":
+			prefixText = yellow + prefix + " [WARN] " + reset
+		case "error":
+			prefixText = red + prefix + " [ERROR] " + reset
+		default:
+			prefixText = green + prefix + " [INFO] " + reset
+		}
+	}
+	return log.New(writer, prefixText, flag)
+}
+func NewLogger(opts LoggerOptions) *Logger {
 	writer := io.Writer(os.Stdout)
+
+	var prefix string
+
+	if !opts.HidePrefix {
+		prefix = opts.Prefix
+	}
 
 	return &Logger{
 		writer: writer,
-		debug:  log.New(writer, blue+prefix+" [DEBUG] "+reset, log.Ltime|log.Ldate),
-		info:   log.New(writer, green+prefix+" [INFO] "+reset, log.Ltime|log.Ldate),
-		warn:   log.New(writer, yellow+prefix+" [WARN] "+reset, log.Ltime|log.Ldate),
-		err:    log.New(writer, red+prefix+" [ERROR] "+reset, log.Ltime|log.Ldate),
+		debug:  getLog(writer, "debug", prefix, opts.HideTime, opts.HidePrefix),
+		info:   getLog(writer, "info", prefix, opts.HideTime, opts.HidePrefix),
+		warn:   getLog(writer, "warn", prefix, opts.HideTime, opts.HidePrefix),
+		err:    getLog(writer, "error", prefix, opts.HideTime, opts.HidePrefix),
 	}
 }
 

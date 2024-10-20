@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mayron1806/go-clover-core/logging"
 	"github.com/mayron1806/go-clover-core/service"
 	"github.com/stretchr/testify/assert"
 )
@@ -78,9 +77,7 @@ func TestParseToken_InvalidToken(t *testing.T) {
 
 func TestDefaultTokenOptions(t *testing.T) {
 	// Set expected environment variables for the test
-	logger := logging.NewLogger("TestDefaultTokenOptions")
 	opts, err := service.DefaultTokenOptions()
-	logger.Debugf("%+v", opts)
 
 	assert.NoError(t, err, "Error loading default token options")
 	assert.NotEmpty(t, opts.Secret, "Token secret should be set")

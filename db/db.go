@@ -15,10 +15,11 @@ func (d *Database) Connect(driver, dsn string) error {
 	d.logger.Info("Connecting to database...")
 	db, err := sql.Open(driver, dsn)
 	if err != nil {
+		d.logger.Errorf("Failed to connect to database: %v", err.Error())
 		return err
 	}
 	if err := db.Ping(); err != nil {
-		d.logger.Info("Failed to connect to database")
+		d.logger.Errorf("Failed to ping database: %v", err.Error())
 		return err
 	}
 	d.logger.Info("Connected to database")
@@ -33,6 +34,8 @@ func (d *Database) Close() error {
 }
 func NewDatabase() *Database {
 	return &Database{
-		logger: logging.NewLogger("Database"),
+		logger: logging.NewLogger(logging.LoggerOptions{
+			Prefix: "DB",
+		}),
 	}
 }
