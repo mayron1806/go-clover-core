@@ -10,8 +10,7 @@ import (
 )
 
 type Clover struct {
-	router *Router
-	server *http.Server
+	server *Server
 	logger *cloverlog.Logger
 	db     *cloverdb.Database
 }
@@ -20,11 +19,11 @@ func (c *Clover) Run() {
 	if c.db != nil {
 		defer c.db.Close()
 	}
-	c.logger.Info(fmt.Sprintf("Clover server running on %s", c.server.Addr))
+	c.logger.Info(fmt.Sprintf("Clover server running on %s", c.server.httpServer.Addr))
 	c.server.ListenAndServe()
 }
 
-func (c *Clover) ConfigureServer(server *http.Server) {
+func (c *Clover) ConfigureServer(server *http.Server) *Server {
 	r := httprouter.New()
 	if server == nil {
 		server = &http.Server{
@@ -33,12 +32,11 @@ func (c *Clover) ConfigureServer(server *http.Server) {
 		}
 	}
 	server.Handler = r
-	c.server = server
-
-	c.router = NewRouter(r, "/")
+	c.server = NewServer(server, NewRouter(r, "/"))
+	return c.server
 }
 func (c *Clover) Router() *Router {
-	return c.router
+	return c.server.router
 }
 func NewClover() *Clover {
 	logger := cloverlog.NewLogger(cloverlog.LoggerOptions{
