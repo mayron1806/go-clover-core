@@ -5,7 +5,8 @@ import (
 )
 
 type Router struct {
-	router      *httprouter.Router
+	route       *httprouter.Router
+	subRouters  []*Router
 	prefix      string
 	middlewares []Middleware
 }
@@ -30,7 +31,7 @@ func (r *Router) use(method, pattern string, handler httprouter.Handle, middlewa
 	}
 
 	// Register the final handler with the method and pattern
-	r.router.Handle(method, r.prefix+pattern, finalHandler)
+	r.route.Handle(method, r.prefix+pattern, finalHandler)
 }
 
 // GET maps a route to the GET method
@@ -78,13 +79,15 @@ func (f *Router) TRACE(pattern string, handler httprouter.Handle, middlewares ..
 	f.use("TRACE", f.prefix+pattern, handler, middlewares...)
 }
 
-func (f *Router) Group(pattern string) *RouteGroup {
-	return NewRouter(f.prefix + pattern).Group(pattern)
+func (f *Router) AddSubRoute(pattern string) *Router {
+	subRouter := NewRouter(f.route, f.prefix+pattern)
+	f.subRouters = append(f.subRouters, subRouter)
+	return subRouter
 }
 
-func NewRouter(prefix string) *Router {
+func NewRouter(router *httprouter.Router, prefix string) *Router {
 	return &Router{
-		router: httprouter.New(),
+		route:  router,
 		prefix: prefix,
 	}
 }
