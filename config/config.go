@@ -1,3 +1,3 @@
-package cloverconfig
+package config
 
 var env interface{}

@@ -1,12 +1,12 @@
-package cloverusecase
+package usecase
 
-import "github.com/mayron1806/go-clover-core/cloverepo"
+import "github.com/mayron1806/go-clover-core/repository"
 
 type InputCreate[E any] interface {
 	ToEntity() E
 }
 type UseCaseCreate[E any] struct {
-	repository cloverepo.Repository[E]
+	repository repository.Repository[E]
 }
 
 func (u UseCaseCreate[E]) Execute(input InputCreate[E]) (*E, error) {

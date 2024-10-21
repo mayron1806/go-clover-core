@@ -1,4 +1,4 @@
-package clovermodel
+package model
 
 import (
 	"time"

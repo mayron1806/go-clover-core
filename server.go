@@ -3,7 +3,8 @@ package clover
 import (
 	"context"
 	"net/http"
-	"strings"
+
+	"github.com/mayron1806/go-clover-core/cors"
 )
 
 type Server struct {
@@ -11,30 +12,17 @@ type Server struct {
 	router     *Router
 }
 
-func (s *Server) ListenAndServe() {
-	s.httpServer.ListenAndServe()
-}
-func (s *Server) Shutdown(ctx context.Context) {
-	s.httpServer.Shutdown(ctx)
+func (s *Server) ListenAndServe() error {
+	return s.httpServer.ListenAndServe()
 }
 
-type CORSOptions struct {
-	AllowedOrigins []string
-	AllowedHeaders []string
-	AllowedMethods []string
+func (s *Server) Shutdown(ctx context.Context) error {
+	return s.httpServer.Shutdown(ctx)
 }
 
-func (s *Server) AddCors(opts CORSOptions) {
-	s.router.route.GlobalOPTIONS = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", strings.Join(opts.AllowedOrigins, ","))
-		w.Header().Set("Access-Control-Allow-Methods", strings.Join(opts.AllowedMethods, ","))
-		w.Header().Set("Access-Control-Allow-Headers", strings.Join(opts.AllowedHeaders, ","))
-
-		if r.Method == http.MethodOptions {
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
-	})
+func (s *Server) AddCors(opts cors.CORSOptions) *Server {
+	s.router.route.GlobalOPTIONS = cors.Cors(opts)
+	return s
 }
 
 func (s *Server) Router() *Router {

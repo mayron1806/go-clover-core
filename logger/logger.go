@@ -1,4 +1,4 @@
-package cloverlog
+package logger
 
 import (
 	"io"

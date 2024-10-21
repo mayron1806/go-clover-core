@@ -1,9 +1,9 @@
-package cloverusecase
+package usecase
 
-import "github.com/mayron1806/go-clover-core/cloverepo"
+import "github.com/mayron1806/go-clover-core/repository"
 
 type UseCaseDelete[E any] struct {
-	repository cloverepo.Repository[E]
+	repository repository.Repository[E]
 }
 
 func (u UseCaseDelete[E]) Execute(id int64) error {

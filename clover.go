@@ -1,26 +1,47 @@
 package clover
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"os"
+	"os/signal"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/mayron1806/go-clover-core/cloverdb"
-	"github.com/mayron1806/go-clover-core/cloverlog"
+	"github.com/mayron1806/go-clover-core/db"
+	"github.com/mayron1806/go-clover-core/logger"
 )
 
 type Clover struct {
 	server *Server
-	logger *cloverlog.Logger
-	db     *cloverdb.Database
+	logger *logger.Logger
+	db     *db.Database
 }
 
 func (c *Clover) Run() {
 	if c.db != nil {
 		defer c.db.Close()
 	}
-	c.logger.Info(fmt.Sprintf("Clover server running on %s", c.server.httpServer.Addr))
-	c.server.ListenAndServe()
+
+	c.logger.Infof("Clover server running on %s", c.server.httpServer.Addr)
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt)
+
+	go func() {
+		if err := c.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			c.logger.Errorf("Server error: %v", err)
+		}
+	}()
+
+	<-stop
+
+	c.logger.Infof("Shutting down server...")
+
+	if err := c.server.Shutdown(context.Background()); err != nil {
+		c.logger.Errorf("Server error: %v", err)
+	}
+
+	c.logger.Infof("Server stopped")
 }
 
 func (c *Clover) ConfigureServer(server *http.Server) *Server {
@@ -39,11 +60,10 @@ func (c *Clover) Router() *Router {
 	return c.server.router
 }
 func NewClover() *Clover {
-	logger := cloverlog.NewLogger(cloverlog.LoggerOptions{
-		HideTime:   true,
-		HidePrefix: true,
+	logger := logger.NewLogger(logger.LoggerOptions{
+		Prefix: "CLOVER",
 	})
-	logger.Info(logo)
+	fmt.Printf("%s\n", logo)
 	return &Clover{
 		logger: logger,
 	}

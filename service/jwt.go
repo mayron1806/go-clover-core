@@ -1,10 +1,10 @@
-package cloverservice
+package service
 
 import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/mayron1806/go-clover-core/cloverconfig"
+	"github.com/mayron1806/go-clover-core/config"
 )
 
 var SigningMethod map[string]*jwt.SigningMethodHMAC = map[string]*jwt.SigningMethodHMAC{
@@ -24,7 +24,7 @@ type JWTService struct {
 
 // DefaultTokenOptions returns default token options
 func DefaultTokenOptions() (TokenOptions, error) {
-	envLoader := cloverconfig.NewEnvLoader[TokenOptions]()
+	envLoader := config.NewEnvLoader[TokenOptions]()
 	env, err := envLoader.LoadEnv()
 	if err != nil {
 		return TokenOptions{}, err

@@ -1,11 +1,11 @@
-package cloverdb
+package db
 
 import (
 	"database/sql"
 	"errors"
 	"time"
 
-	"github.com/mayron1806/go-clover-core/cloverlog"
+	"github.com/mayron1806/go-clover-core/logger"
 )
 
 type DatabaseOptions struct {
@@ -18,7 +18,7 @@ type DatabaseOptions struct {
 }
 type Database struct {
 	dbInstance *sql.DB
-	logger     *cloverlog.Logger
+	logger     *logger.Logger
 	options    DatabaseOptions
 }
 
@@ -64,7 +64,7 @@ func NewDatabase(options *DatabaseOptions) (*Database, error) {
 	}
 	return &Database{
 		options: *options,
-		logger: cloverlog.NewLogger(cloverlog.LoggerOptions{
+		logger: logger.NewLogger(logger.LoggerOptions{
 			Prefix: "DB",
 		}),
 	}, nil
