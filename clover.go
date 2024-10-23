@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/mayron1806/go-clover-core/db"
 	"github.com/mayron1806/go-clover-core/logger"
 )
@@ -23,7 +22,6 @@ func (c *Clover) Run() {
 		defer c.db.Close()
 	}
 
-	c.logger.Infof("Clover server running on %s", c.server.httpServer.Addr)
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt)
 
@@ -44,16 +42,10 @@ func (c *Clover) Run() {
 	c.logger.Infof("Server stopped")
 }
 
-func (c *Clover) ConfigureServer(server *http.Server) *Server {
-	r := httprouter.New()
-	if server == nil {
-		server = &http.Server{
-			Addr:    ":8080",
-			Handler: r,
-		}
+func (c *Clover) ConfigureServer(server *http.Server, force bool) *Server {
+	if c.server == nil || force {
+		c.server = NewServer(server)
 	}
-	server.Handler = r
-	c.server = NewServer(server, NewRouter(r, "/"))
 	return c.server
 }
 func (c *Clover) Router() *Router {

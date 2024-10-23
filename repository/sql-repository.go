@@ -9,25 +9,17 @@ import (
 	"github.com/mayron1806/go-clover-core/model"
 )
 
-type SQLRepository[T model.IModel] struct {
+type SQLRepository[T model.BaseModel] struct {
 	db        *sql.DB
 	tableName string
 }
 
 // NewSQLRepository creates a new instance of SQLRepository.
-func NewSQLRepository[T model.IModel](db *sql.DB, tableName string) *SQLRepository[T] {
+func NewSQLRepository[T model.BaseModel](db *sql.DB, tableName string) *SQLRepository[T] {
 	return &SQLRepository[T]{
 		db:        db,
 		tableName: tableName,
 	}
-}
-
-// validateEntity checks if the entity is valid before any operation.
-func (r *SQLRepository[T]) validateEntity(entity T) error {
-	if err := entity.Validate(); err != nil {
-		return err
-	}
-	return nil
 }
 
 // Implementa o método de busca (Find) por chave primária
@@ -58,12 +50,16 @@ func (r *SQLRepository[T]) FindAll() ([]T, error) {
 }
 
 // Implementa o método de criação (Create) com validação e hook BeforeCreate
-func (r *SQLRepository[T]) Create(entity T) (T, error) {
-	if err := r.validateEntity(entity); err != nil {
-		return entity, err
+func (r *SQLRepository[T]) Create(entity *T) (*T, error) {
+	if e, ok := any(entity).(model.Validate); ok {
+		if err := e.Validate(); err != nil {
+			return nil, err
+		}
 	}
-	if err := entity.BeforeCreate(); err != nil {
-		return entity, err
+	if e, ok := any(entity).(model.BeforeCreate); ok {
+		if err := e.BeforeCreate(); err != nil {
+			return nil, err
+		}
 	}
 
 	fields, values, placeholders := extractFieldsAndValues(entity)
@@ -74,15 +70,17 @@ func (r *SQLRepository[T]) Create(entity T) (T, error) {
 }
 
 // Implementa o método de atualização (Update) com validação e hook BeforeUpdate
-func (r *SQLRepository[T]) Update(entity T) (T, error) {
-	// Validação e hook BeforeUpdate
-	if err := r.validateEntity(entity); err != nil {
-		return entity, err
+func (r *SQLRepository[T]) Update(entity *T) (*T, error) {
+	if e, ok := any(entity).(model.Validate); ok {
+		if err := e.Validate(); err != nil {
+			return nil, err
+		}
 	}
-	if err := entity.BeforeUpdate(); err != nil {
-		return entity, err
+	if e, ok := any(entity).(model.BeforeUpdate); ok {
+		if err := e.BeforeUpdate(); err != nil {
+			return nil, err
+		}
 	}
-
 	fields, values, _ := extractFieldsAndValues(entity)
 	setClause := []string{}
 	for _, field := range fields {
@@ -95,12 +93,7 @@ func (r *SQLRepository[T]) Update(entity T) (T, error) {
 }
 
 // Implementa o método de exclusão (Delete) com validação e hook BeforeDelete
-func (r *SQLRepository[T]) Delete(key int64, entity T) error {
-	// Validação e hook BeforeDelete
-	if err := entity.BeforeDelete(); err != nil {
-		return err
-	}
-
+func (r *SQLRepository[T]) Delete(key int64) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id = ?", r.tableName)
 	_, err := r.db.Exec(query, key)
 	return err
