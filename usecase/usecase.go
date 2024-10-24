@@ -1,5 +1,5 @@
 package usecase
 
-type Usecase interface {
-	Execute(input any) (*any, error)
+type Usecase[Input any, Output any] interface {
+	Execute(input Input) (*Output, error)
 }

@@ -30,7 +30,7 @@ func (mux *ServeClover) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if !isDynamicRoute(pattern) {
 			if handlersByMethod, ok := mux.handlers[r.URL.Path]; ok {
 				if handler, ok := handlersByMethod[r.Method]; ok {
-					handler(newContext(w, r, nil))
+					handler(NewContext(w, r, nil))
 					return
 				}
 				http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
@@ -47,7 +47,7 @@ func (mux *ServeClover) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				if handler, ok := handlersByMethod[r.Method]; ok {
 					fmt.Println("Dynamic route", r.URL.Path)
 					// Cria o contexto com os parâmetros capturados
-					handler(newContext(w, r, params))
+					handler(NewContext(w, r, params))
 					return
 				}
 				http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
@@ -56,7 +56,7 @@ func (mux *ServeClover) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		} else if pattern == r.URL.Path {
 			// Caso o padrão seja exato
 			if handler, ok := handlersByMethod[r.Method]; ok {
-				handler(newContext(w, r, nil))
+				handler(NewContext(w, r, nil))
 				return
 			}
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)

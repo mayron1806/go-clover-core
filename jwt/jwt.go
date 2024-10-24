@@ -1,4 +1,4 @@
-package service
+package jwt
 
 import (
 	"time"
@@ -13,29 +13,34 @@ var SigningMethod map[string]*jwt.SigningMethodHMAC = map[string]*jwt.SigningMet
 	"HS512": jwt.SigningMethodHS512,
 }
 
-type TokenOptions struct {
+type Subject map[string]any
+type JWTClaims struct {
+	jwt.RegisteredClaims
+	Subject Subject `json:"sub"`
+}
+type JWTTokenOptions struct {
 	Duration time.Duration `env:"JWT_DURATION" default:"15m"`
 	Issuer   string        `env:"JWT_ISSUER"`
 	Secret   string        `env:"JWT_SECRET"`
 	Method   string        `env:"JWT_METHOD" default:"HS256"`
 }
-type JWTService struct {
-}
 
 // DefaultTokenOptions returns default token options
-func DefaultTokenOptions() (TokenOptions, error) {
-	envLoader := config.NewEnvLoader[TokenOptions]()
+func DefaultTokenOptions() (JWTTokenOptions, error) {
+	envLoader := config.NewEnvLoader[JWTTokenOptions]()
 	env, err := envLoader.LoadEnv()
 	if err != nil {
-		return TokenOptions{}, err
+		return JWTTokenOptions{}, err
 	}
 	return *env, nil
 }
-func (s *JWTService) GenerateToken(payload interface{}, opts TokenOptions) (string, error) {
-	claims := jwt.RegisteredClaims{
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(opts.Duration)),
-		Subject:   payload.(string),
-		IssuedAt:  jwt.NewNumericDate(time.Now()),
+func GenerateToken(subject Subject, opts JWTTokenOptions) (string, error) {
+	claims := JWTClaims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(opts.Duration)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
+		Subject: subject,
 	}
 	if opts.Issuer != "" {
 		claims.Issuer = opts.Issuer
@@ -47,18 +52,14 @@ func (s *JWTService) GenerateToken(payload interface{}, opts TokenOptions) (stri
 	res, err := token.SignedString([]byte(opts.Secret))
 	return res, err
 }
-func (s *JWTService) ParseToken(token string, opts TokenOptions) (string, error) {
-	tokenClaims, err := jwt.ParseWithClaims(token, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
+func ParseToken(token string, opts JWTTokenOptions) (*JWTClaims, error) {
+	tokenClaims, err := jwt.ParseWithClaims(token, &JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(opts.Secret), nil
 	})
 	if tokenClaims != nil {
-		if claims, ok := tokenClaims.Claims.(*jwt.RegisteredClaims); ok && tokenClaims.Valid {
-			return claims.Subject, nil
+		if claims, ok := tokenClaims.Claims.(*JWTClaims); ok && tokenClaims.Valid {
+			return claims, nil
 		}
 	}
-	return "", err
-}
-
-func NewJWTService() *JWTService {
-	return &JWTService{}
+	return nil, err
 }
