@@ -48,9 +48,11 @@ func (c *Clover) ConfigureServer(server *http.Server, force bool) *Server {
 	}
 	return c.server
 }
+
 func (c *Clover) Router() *Router {
 	return c.server.router
 }
+
 func NewClover() *Clover {
 	logger := logger.NewLogger(logger.LoggerOptions{
 		Prefix: "CLOVER",

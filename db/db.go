@@ -9,17 +9,17 @@ import (
 )
 
 type DatabaseOptions struct {
-	Driver       string
-	DSN          string
-	MaxIdleTime  time.Duration
-	MaxLifetime  time.Duration
-	MaxIdleConns int
-	MaxOpenConns int
+	Driver       string        `env:"DB_DRIVER" validate:"required"`
+	DSN          string        `env:"DB_DSN" validate:"required"`
+	MaxIdleTime  time.Duration `env:"DB_MAX_IDLE_TIME"`
+	MaxLifetime  time.Duration `env:"DB_MAX_LIFETIME"`
+	MaxIdleConns int           `env:"DB_MAX_IDLE_CONNS"`
+	MaxOpenConns int           `env:"DB_MAX_OPEN_CONNS"`
 }
 type Database struct {
 	dbInstance *sql.DB
 	logger     *logger.Logger
-	options    DatabaseOptions
+	options    *DatabaseOptions
 }
 
 func (d *Database) Connect() error {
@@ -58,12 +58,15 @@ func (d *Database) Close() error {
 	d.logger.Info("Closing database...")
 	return d.dbInstance.Close()
 }
+func (d *Database) GetOptions() *DatabaseOptions {
+	return d.options
+}
 func NewDatabase(options *DatabaseOptions) (*Database, error) {
 	if options == nil {
 		return nil, errors.New("database options cannot be nil")
 	}
 	return &Database{
-		options: *options,
+		options: options,
 		logger: logger.NewLogger(logger.LoggerOptions{
 			Prefix: "DB",
 		}),
